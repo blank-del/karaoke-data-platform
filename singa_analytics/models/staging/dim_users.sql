@@ -1,0 +1,3 @@
+select
+*
+from cdc_product_db_public_users

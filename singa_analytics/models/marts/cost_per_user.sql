@@ -1,3 +1,4 @@
+{{ config(materialized='table') }}
 WITH new_users_by_channel AS (
     -- Count new paying users attributed to each channel
     SELECT 

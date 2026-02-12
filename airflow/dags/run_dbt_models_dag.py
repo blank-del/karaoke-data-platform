@@ -18,7 +18,7 @@ with DAG(
         'retry_delay': timedelta(minutes=5),
     },
     description='Run dbt models to transform raw data',
-    schedule='@once',  # Run after load_avro completes
+    schedule='0 9 * * *',  # Run after load_avro completes
     catchup=False,
 ) as dag:
     

@@ -1,2 +1,4 @@
-psycopg2-binary
+psycopg2
 apache-airflow-providers-postgres
+dbt-core
+dbt-postgres

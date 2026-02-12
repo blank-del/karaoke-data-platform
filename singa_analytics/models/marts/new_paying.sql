@@ -1,3 +1,4 @@
+{{ config(materialized='table') }}
 WITH first_payments AS (
     SELECT 
         user_id, 
@@ -6,7 +7,7 @@ WITH first_payments AS (
     GROUP BY user_id
 )
 SELECT 
-    month(fp.first_payment_date) as month,
+    EXTRACT (MONTH FROM fp.first_payment_date) as month,
     u.country,
     u.signup_source as channel,
     COUNT(DISTINCT fp.user_id) as new_paying_users
