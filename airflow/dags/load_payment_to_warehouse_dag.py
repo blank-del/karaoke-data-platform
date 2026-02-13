@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 default_args = {
     'owner': 'data_team',
-    'start_date': datetime(2026, 1, 1),
+    'start_date': datetime(2026, 2, 1),
     'retries': 1,
     'retry_delay': timedelta(minutes=2),
 }
@@ -32,7 +32,7 @@ def create_payment_table():
             );
         """)
         conn.commit()
-        logger.info('fact_marketing table created/verified successfully')
+        logger.info('fact_payments table created/verified successfully')
 
     except Exception as e:
         conn.rollback()

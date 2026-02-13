@@ -45,7 +45,7 @@ class SubscriptionsCRUD:
             return None
         else:
             # This table will mostlbe be statis since subscriptions rarely change, mostly the prices are updates
-            plan_types = ['free', 'basic', 'premium', 'pro']
+            plan_types = ['free', 'basic', 'premium']
             plan_prices = {'free': 0.00, 'basic': 4.99, 'premium': 9.99}
             new_id = []
             try:

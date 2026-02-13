@@ -21,10 +21,14 @@ with DAG(
     schedule='0 9 * * *',  # Run after load_avro completes
     catchup=False,
 ) as dag:
-    
+    test_dbt = BashOperator(
+        task_id='test_dbt_models',
+        bash_command='cd /opt/airflow/singa_analytics && dbt test',
+    )
+
     # Run dbt
     run_dbt = BashOperator(
         task_id='run_dbt_models',
         bash_command='cd /opt/airflow/singa_analytics && dbt run',
     )
-    
+    run_dbt >>  test_dbt

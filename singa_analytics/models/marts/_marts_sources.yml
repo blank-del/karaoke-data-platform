@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: new_paying
+    description: "Fact table for new paying users by channel and country"
+    columns:
+      - name: month
+        description: "Month of first payment"
+        tests:
+          - not_null
+      - name: country
+        description: "User country"
+        tests:
+          - not_null
+      - name: channel
+        description: "Marketing channel"
+        tests:
+          - not_null
+      - name: new_paying_users
+        description: "Count of new paying users"
+        tests:
+          - not_null
+
+  - name: cost_per_user
+    description: "Fact table for cost per new user by channel"
+    columns:
+      - name: channel
+        description: "Marketing channel"
+        tests:
+          - not_null
+      - name: total_spend
+        description: "Total marketing spend"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"
+      - name: new_paying_users
+        description: "Count of new paying users"
+        tests:
+          - not_null
+      - name: cost_per_new_user
+        description: "Cost per new paying user"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ">= 0"

@@ -10,16 +10,16 @@ import logging
 logger = logging.getLogger(__name__)
 default_args = {
     'owner': 'data_team',
-    'start_date': datetime(2026, 1, 1),
+    'start_date': datetime(2026, 2, 1),
     'retries': 1,
     'retry_delay': timedelta(minutes=2),
 }
 
-def generate_payments():
+def generate_payments(**context):
     """Generate fake payment data"""
-    curr_date = datetime.now().strftime('%Y-%m-%d')
     
     payments_data = []
+    curr_date = context['ds']  # execution date in 'YYYY-MM-DD' format
     payment_amounts = [0, 4.99, 9.99]  # Corresponding to free, basic, premium plans
     # Generate payments for 100 users with 50% conversion rate
     for user_id in range(100):

@@ -1,0 +1,48 @@
+models:
+  - name: dim_songs
+    columns:
+      - name: song_id
+        tests:
+          - unique
+          - not_null
+      - name: name
+        tests:
+          - not_null
+      - name: country
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['US', 'UK', 'FI', 'JP', 'CA', 'AU']
+  - name: dim_users
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: country
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['US', 'UK', 'FI', 'JP']
+      - name: signup_source
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Google', 'Facebook', 'Organic']
+      - name: join_date
+        tests:
+          - not_null
+  - name: dim_subscriptions
+    columns:
+      - name: subscription_id
+        tests:
+          - unique
+          - not_null
+      - name: type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['free', 'basic', 'premium']
+      - name: price
+        tests:
+          - not_null

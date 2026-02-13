@@ -9,16 +9,16 @@ logger = logging.getLogger(__name__)
 
 default_args = {
     'owner': 'data_team',
-    'start_date': datetime(2026, 1, 1),
+    'start_date': datetime(2026, 2, 1),
     'retries': 1,
     'retry_delay': timedelta(minutes=2),
 }
 
-def generate_marketing():
+def generate_marketing(**context):
     """Generate fake marketing spend data"""
     
     marketing_data = []
-    curr_date = datetime.now().strftime('%Y-%m-%d')
+    curr_date = context['ds']  # execution date in 'YYYY-MM-DD' format
     
     # Generate marketing data
     for channel in ['Google', 'Facebook']:
