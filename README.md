@@ -1,6 +1,20 @@
 # Singa Home Assignment
 
-## Folder
+## Architecture Overview
+
+![Architecture Diagram](assets/PlatformDiagram.png)
+
+The diagram illustrates the end-to-end data pipeline used for this assignment. It shows how data flows from
+- **simulation scripts** (users, songs, subscriptions) and **API emulators** (marketing, payments) into temporary storage,
+- through **Debezium** CDC into a warehouse database,
+- and the role of Airflow for orchestration and dbt for transformations.
+
+Key architectural principles:
+
+- **Decoupled ingestion and loading**: generation of source files and their subsequent ingestion into Postgres are handled by separate Airflow DAGs, enabling independent scheduling, backfills, and easier troubleshooting.
+- **Parametrized tasks with idempotency**: loader DAGs use the execution date (`ds`) to target specific partitions and check for existing data before inserting, ensuring upsert behavior and preventing duplicates.
+
+## Folder Contents
 1.  `airflow`: Contains the DAGs for ingesting data (emulating API fetch response from Marketing and Payment), loading the data into Postgres DB (which is acting as data warehouse), and for running the dbt models followed by dbt tests.
 2.  `scripts`: Contains python scripts (containerised) that emulate the normal DB operations for `users`, `songs`, `subscriptions`. The operations include CRUD (create, read, update, and delete) at different frequencies for each operation to emulate rela life DB transactions.
 3.  `singa_analytics`: Contains folders for dbt.
