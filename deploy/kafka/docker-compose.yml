@@ -1,0 +1,52 @@
+services:
+  # --------------------
+  # CDC Debezium stack
+  # --------------------
+  kafka:
+  # in modern version of kafka we don't need zookeeper as it is integrated inside using kakfa raft
+    image: quay.io/debezium/kafka:3.4
+    hostname: kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      CLUSTER_ID: kafka-cluster
+      NODE_ID: 1
+      NODE_ROLE: combined
+      # you cannot specify the voters in cluster and also use --initial-controllers
+      # or --standalone option as it will lead to error 
+      # "You cannot specify the voters in cluster and also use --initial-controllers or --standalone option"
+      #KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092,CONTROLLER://kafka:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+  
+  connect:
+    image: quay.io/debezium/connect:3.4
+    container_name: connect
+    volumes:
+      - ./debezium:/docker-entrypoint-initdb.d
+    depends_on: [kafka]
+    entrypoint:
+      - bash
+      - -c
+      - |
+        # Start the Connect worker
+        /docker-entrypoint.sh start &
+        # Loop until the Connect API (port 8083) returns a 200 OK
+        until curl -s -o /dev/null localhost:8083; do
+          echo "Waiting for Connect API..."
+          sleep 2
+        done
+        /bin/bash /docker-entrypoint-initdb.d/register_postgres_source.sh
+        wait
+    ports:
+      - "8083:8083"
+    environment:
+      BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_HEAP_OPTS: "-Xms256M -Xmx512M"
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: connect_configs
+      OFFSET_STORAGE_TOPIC: connect_offsets
+      STATUS_STORAGE_TOPIC: connect_statuses
+      KEY_CONVERTER_SCHEMAS_ENABLE: "false"
+      VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
