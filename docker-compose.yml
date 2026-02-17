@@ -1,38 +1,4 @@
-x-simmulate-common:
-  &simmulate-common
-      build:
-        context: .
-        dockerfile: scripts/Dockerfile
-      environment:
-        PGHOST: application-db
-        PGPORT: 5432
-        PGUSER: admin
-        PGPASSWORD: admin
-        PGDATABASE: application_db
-        PYTHONUNBUFFERED: 1
-      depends_on: 
-        application-db:
-          condition: service_healthy
 services:
-  # --------------------
-  # Application stack
-  # --------------------
-  application-db:
-    image: quay.io/debezium/postgres:16
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: application_db
-    volumes:
-      - application-db-volume:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "admin", "-d", "application_db"]
-      interval: 10s
-      retries: 5
-      start_period: 5s
-    restart: always
   # --------------------
   # Warehouse stack
   # --------------------
@@ -52,20 +18,6 @@ services:
       retries: 5
       start_period: 5s
     restart: always
-  # --------------------
-  # Simulate users, songs, and subscription database activity
-  # --------------------
-  simulate_users_db:
-    <<: *simmulate-common
-    command: python users_db_simulate.py
-
-  simulate_subscriptions_db:
-    <<: *simmulate-common
-    command: python subscriptions_db_simulate.py
-
-  simulate_songs_db:
-    <<: *simmulate-common
-    command: python songs_db_simulate.py
   # --------------------
   # CDC Debezium stack
   # --------------------
